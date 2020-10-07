@@ -1,0 +1,431 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/main.css">
+
+    <title>EbbDrop's timer</title>
+
+    <style>
+        body {
+            background: rgb(135, 4, 43);
+            display: flex;
+            flex-direction: column;
+            color: white;
+        }
+
+        #header {
+            background: rgb(210,0,62);
+            display: flex;
+            align-items: center;
+        }
+
+        #title, a {
+            padding: 1rem;
+            margin: 0;
+            display: inline-block;
+            color: white;
+        }
+
+        #back {
+            color: white;
+            margin-left: auto;
+        }
+
+        #main-page {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 0.5rem;
+        }
+
+        .container {
+            background: rgb(180,0,52);
+            margin: 0.5rem;
+            border-radius: 1rem;
+            padding: 1rem;
+        }
+
+        #timer-container {
+            flex: 75%;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        #fullscreen {
+            position: absolute;
+            padding: 0;
+            top: 1rem;
+            right: 1rem;
+            text-align: left;
+        }
+        
+        .alarm {
+            animation-name: alarm-ani;
+            animation-timing-function: steps(2);
+            animation-duration: 0.5s;
+            animation-iteration-count: infinite;
+        }
+        @keyframes alarm-ani {
+            from {background-color: rgb(180,0,52);}
+            to {background-color: rgb(255,0,0);}
+        }
+
+        #timer-number-holder {
+            display: grid;
+            place-items: center;
+            flex: 1;
+            font-size: 18vw;
+        }
+
+        #mili {
+            font-size: 5vw;
+            color: lightgray;
+        }
+
+        #control {
+            height: 3rem;
+            display: flex;
+            justify-content: center;
+        }
+
+        #control > button {
+            margin-right: 1em;
+            margin-left: 1em;
+            width: 6rem;
+        } 
+
+        #setup {
+            flex: 25%;
+            display: flex;
+            flex-direction: row;
+        }
+
+        #presets-container {
+            flex: 50%;
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .preset {
+            margin: 0.2rem;
+            width: 5rem;
+        }
+
+        #custom-container {
+            flex: 1 1 50%;
+            display: flex;
+        }
+
+        #number-input-container {
+            flex 1;
+            display: flex;
+        }
+
+        .number-input {
+            display: flex;
+            flex: 1;
+            margin: 0.2rem;
+        }
+
+        .button-container {
+            flex 1;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+        }
+        
+        .num {
+            flex: 1 1 5rem;
+            min-width: 0;
+            width: 100%;
+            background-color: rgb(210,0,62);
+            color: white;
+            font-size: 3rem;
+            border: 0.3rem solid rgb(135, 4, 43);
+            border-radius: 0.3rem;
+            text-align: center;
+        }
+        .add {
+            flex 1;
+            margin: 0.2rem;
+            width: 2rem;
+            height: 2rem;
+            border-radius: 2rem;
+        }
+        .sub {
+            flex 1;
+            margin: 0.2rem;
+            width: 2rem;
+            height: 2rem;
+            border-radius: 2rem;
+        }
+        
+        #set-custom {
+            flex: 1;
+            margin-left: 0.5rem;
+        }
+         
+        button {
+            background-color: rgb(210,0,62);
+            color: white;
+        }
+
+        progress {
+            background: transparent;
+            border: 0.3rem solid rgb(135, 4, 43);
+            border-radius: 0.3rem;
+            width: 85%;
+            height: 2rem;
+            margin: auto;
+        }
+        progress::-webkit-progress-bar {
+            background: transparent;
+        }
+        progress::-webkit-progress-value {
+            background: white;
+        }
+        progress::-moz-progress-bar {
+            background: white;
+        }
+        
+        @media (max-width: 992px) {
+            #setup {
+                flex-direction: column;
+            }
+            button:not(.sub):not(.add) {
+                padding: 0.8rem;
+            }
+        }
+    </style>
+    </head>
+    <body>
+        <div id="header">
+            <h1 id="title">Timer</h1>
+            <a href="bartimer.html">Bar Timer</a>
+            <a href="stopwatch.html">Stopwatch</a>
+            <a href="clock.html">Clock</a>
+            <a id="back" href="index.html">Back</a>
+        </div>
+        <div id="main-page">
+            <div class="container" id="timer-container">
+                <a id="fullscreen" href="#">Fullscreen</a>
+                <progress value="0" max="100" id="progress"></progress>
+                <div id="timer-number-holder">
+                    <div id="timer">00:00:00<span id="mili">.000</span></div>
+                </div>
+                <div id="control">
+                    <button id="start" style="background-color: green;">
+                        Start
+                    </button>
+                    <button id="stop" style="background-color: red; display: none;">
+                        Stop
+                    </button>
+                    <button id="reset" style="background-color: orange;" disabled>
+                        Reset
+                    </button>
+                </div>
+            </div>
+            <div id="setup">
+                <div class="container" id="presets-container">
+                    <button class="preset" data-time="5">5 s</button>
+                    <button class="preset" data-time="10">10 s</button>
+                    <button class="preset" data-time="15">15 s</button>
+                    <button class="preset" data-time="30">30 s</button>
+                    <button class="preset" data-time="45">45 s</button>
+                    <button class="preset" data-time="60">1 m</button>
+                    <button class="preset" data-time="120">2 m</button>
+                    <button class="preset" data-time="300">5 m</button>
+                    <button class="preset" data-time="600">10 m</button>
+                    <button class="preset" data-time="900">15 m</button>
+                    <button class="preset" data-time="1200">20 m</button>
+                    <button class="preset" data-time="1800">30 m</button>
+                    <button class="preset" data-time="2700">45 m</button>
+                    <button class="preset" data-time="3000">50 m</button>
+                    <button class="preset" data-time="3600">1 u</button>
+                    <button class="preset" data-time="5400">1:30 u</button>
+                    <button class="preset" data-time="7200">2 u</button>
+                    <button class="preset" data-time="9000">2:30 u</button>
+                    <button class="preset" data-time="10800">3 u</button>
+                    <button class="preset" data-time="12600">3:30 u</button>
+                    <button class="preset" data-time="14400">4 u</button>
+                </div>
+                <div class="container" id="custom-container">
+                    <div id="number-input-container">
+                        <div class="number-input">
+                            <input class="num" type="text" id="hours" value="00" tabindex="1">
+                            <div class="button-container">
+                                <button class="add" tabindex="-1">&#9650;</button>
+                                <button class="sub" tabindex="-1">&#9660;</button>
+                            </div>
+                        </div>
+                        <div class="number-input">
+                            <input class="num" type="text" id="minutes" value="00" tabindex="2">
+                            <div class="button-container">
+                                <button class="add" tabindex="-1">&#9650;</button>
+                                <button class="sub" tabindex="-1">&#9660;</button>
+                            </div>
+                        </div>
+                        <div class="number-input">
+                            <input class="num" type="text" id="seconds" value="00" tabindex="3">
+                            <div class="button-container">
+                                <button class="add" tabindex="-1">&#9650;</button>
+                                <button class="sub" tabindex="-1">&#9660;</button>
+                            </div>
+                        </div>
+                    </div>
+                    <button id="set-custom" tabindex="4">Set</button>
+                </div>
+            </div>
+        </div>
+
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+        <script src="js/main.js"></script>
+        <script>
+            var timeLeft = 0;
+            var startTime;
+            var running = false;
+            var timer;
+            var alarm = new Audio('sounds/alarm.mp3');
+            alarm.loop = true;
+
+            function changeRunning(run) {
+                running = run;
+                if (running) {
+                    $("#reset").prop('disabled', false);
+                    $(".preset").prop('disabled', true);
+                    $("#set-custom").prop('disabled', true);
+                    $("#start").text("Continue");
+                    $("#stop").text("Pause");
+                } else {
+                    $("#reset").prop('disabled', true);
+                    $(".preset").prop('disabled', false);
+                    $("#set-custom").prop('disabled', false);
+                    $("#start").text("Start");
+                    $("#stop").text("Stop");
+                }
+            }
+
+            function updateTimeDisplay() {
+                let miliseconds = Math.floor(timeLeft);
+                let hours = Math.floor(miliseconds / 3600000);
+                miliseconds -= hours * 3600000;
+                let minutes = Math.floor(miliseconds / 60000);
+                miliseconds -= minutes * 60000;
+                let seconds = Math.floor(miliseconds / 1000);
+                miliseconds -= seconds * 1000;
+                $("#timer").contents()[0].data = hours.toString().padStart(2, "0") + ":" + minutes.toString().padStart(2, "0") + ":" + seconds.toString().padStart(2, "0");
+                $("#mili").text("." + miliseconds.toString().padStart(3, "0"));
+                $("#progress").val(timeLeft);
+                $("#progress").prop('max',startTime);
+            }
+
+            $("#start").click(function() {
+                if (timeLeft === 0) {
+                    return;
+                }
+                if (!running) {
+                    startTime = timeLeft;
+                }
+                updateTimeDisplay();
+                var prevDate = Date.now();
+                timer = setInterval(function() {
+                    updateTimeDisplay();
+                    let delta = Date.now() - prevDate;
+                    prevDate = Date.now();
+                    timeLeft -= delta;
+                    if (timeLeft < 0) {
+                        $("#timer-container").addClass("alarm");
+                        timeLeft = 0;
+                        reset();
+                        alarm.play();
+                    }
+                }, 16);
+                changeRunning(true);
+                $("#start").hide();
+                $("#stop").show();
+            });
+
+            $("#stop").click(function() {
+                clearInterval(timer);
+                $("#start").show();
+                $("#stop").hide();
+            });
+
+            function reset() {
+                timeLeft = startTime;
+                updateTimeDisplay();
+                clearInterval(timer);
+                changeRunning(false);
+                $("#start").show();
+                $("#stop").hide();
+            }
+            $("#reset").click(reset);
+
+            $(".preset").click(function() {
+                timeLeft = parseInt($(this).data('time')) * 1000;
+                startTime = timeLeft;
+                updateTimeDisplay();
+            });
+
+            $(".num").click(function() {
+                $(this).select();
+            });
+            
+            $(".num").inputFilter(function(value) {
+                if (!/^\d*$/.test(value)) {
+                    return false;
+                }
+                let inti = parseInt(value);
+                if (inti > 59) {
+                    return false;
+                }
+               return true;
+            });
+            
+            $(".add").click(function() {
+                let inp = $(this).parent().parent().find("input");
+                let inti = parseInt(inp.val());
+                if (!isNaN(inti) && inti < 59) {
+                    inp.val(inti + 1);
+                }
+            });
+            $(".sub").click(function() {
+                let inp = $(this).parent().parent().find("input");
+                let inti = parseInt(inp.val());
+                if (!isNaN(inti) && inti > 0) {
+                    inp.val(inti - 1);
+                }
+            });
+            $("#set-custom").click(function() {
+                let time = parseInt($("#hours").val()) * 3600 + parseInt($("#minutes").val()) * 60 + parseInt($("#seconds").val());
+                timeLeft = time * 1000;
+                startTime = timeLeft;
+                updateTimeDisplay();
+            });
+
+            $(document).click(function() {
+                $("#timer-container").removeClass("alarm");
+                alarm.pause();
+                alarm.currentTime = 0;
+            });
+            
+            $("#fullscreen").click(function() {
+                if (document.fullscreenElement != null) {
+                    document.exitFullscreen();
+                    $("#fullscreen").text("Fullscreen");
+                } else {
+                    $("#timer-container")[0].requestFullscreen();
+                    $("#fullscreen").text("Exit Fullscreen");
+                }
+                fullscreen = !fullscreen;
+            });
+        </script>
+    </body>
+</html>
+

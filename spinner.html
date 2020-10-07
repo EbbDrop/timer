@@ -1,0 +1,640 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/main.css">
+
+    <title>EbbDrop's spiner</title>
+
+    <style>
+        body {
+            background: rgb(13, 134, 158);
+            display: flex;
+            flex-direction: column;
+            color: black;
+        }
+
+        #header {
+            background: rgb(0, 175, 210);
+            display: flex;
+            align-items: center;
+        }
+
+        #title, a {
+            padding: 1rem;
+            margin: 0;
+            display: inline-block;
+            color: black;
+        }
+
+        #back {
+            color: black;
+            margin-left: auto;
+        }
+
+        #main-page {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 0.5rem;
+        }
+
+        .container {
+            background: rgb(2, 154, 186);
+            margin: 0.5rem;
+            border-radius: 1rem;
+            padding: 1rem;
+        }
+
+        #options {
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            color: black;
+            margin-right: 7rem;
+        }
+
+        .grey {
+            color: dimgrey;
+        }
+
+        #spinner-container {
+            flex: 75%;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        #fullscreen {
+            position: absolute;
+            padding: 0;
+            top: 1rem;
+            right: 1rem;
+            text-align: left;
+        }
+        
+        #spinner {
+            display: grid;
+            place-items: center;
+            flex: 1;
+            font-size: 8vw;
+        }
+
+        #control {
+            height: 3rem;
+            display: flex;
+            justify-content: center;
+        }
+
+        #control > button {
+            margin-right: 1em;
+            margin-left: 1em;
+            width: 6rem;
+        } 
+
+        #setup {
+            flex: 25%;
+            display: flex;
+            flex-direction: row;
+        }
+
+        #repeat-container {
+            flex: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #repeat, #no-repeat {
+            flex: 1;
+            width: 5rem;
+        }
+        #repeat {
+            margin-bottom: 0;
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+        #no-repeat {
+            margin-top: 0;
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+        }
+
+        #repeat:disabled, #no-repeat:disabled {
+            filter: brightness(150%);
+        }
+
+        #options-container {
+            flex: 25%;
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        #classes-container {
+            flex: 75%;
+            display: flex;
+            flex-wrap: wrap;
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+            margin-right: 0;
+        }
+
+        #edit-classes {
+            margin: 0.5rem;
+            margin-left: 0;
+            border-radius: 0 1rem 1rem 0;
+            padding: 1rem;
+        }
+
+        #edit-modal-container {
+            position: fixed;
+            display: none;
+            flex-direction: column;
+            z-index: 1;
+            left: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        #edit-modal {
+            flex: 0 1 auto;
+            margin: 5%;
+            height: 85%;
+            display: flex;
+        }
+
+        #edit-sidebar {
+            display: flex;
+            flex: 0 0 10rem;
+            flex-direction: column;
+        }
+
+        #edit-add {
+            height: 3em;
+            background-color: green;
+        }
+
+        #edit-classes-container {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .edit-class-btn {
+            height: 2em;
+            width: 8rem;
+        }
+
+        #edit-class-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            margin-left: 1rem;
+        }
+
+        #edit-name, #edit-import-label {
+            margin-bottom: 0.5rem;
+        }
+
+        #edit-import {
+            width: 0.1px;
+            height: 0.1px;
+            opacity: 0;
+            overflow: hidden;
+            position: absolute;
+            z-index: -1;
+        }
+
+        #edit-import-label {
+            border: 0;
+            padding: 0.5rem;
+            border-radius: 0.2rem;
+            color: black;
+            font-size: 1rem;
+            background-color: green;
+            cursor: pointer;
+        }
+
+        #edit-import-label:hover {
+            filter: brightness(120%);
+        }
+
+        #edit-import-label:active {
+            filter: brightness(90%);
+        }
+
+        #edit-import-label:disabled {
+            filter: brightness(50%);
+        }
+
+        #edit-info {
+            background-color: rgb(2, 185, 222);
+            border-radius: 0.5rem 0.5rem 0 0;
+            padding: 0.5rem;
+        }
+
+        #edit-class {
+            flex: 1;
+            padding: 0.2rem;
+        }
+
+        #edit-control-container {
+            flex: 0 1 3rem;
+            display: flex;
+            margin-top: 0.2rem;
+        }
+        
+        #edit-remove {
+            background-color: red;
+        }
+
+        #edit-close {
+            background-color: green;
+            margin-left: auto;
+        }
+ 
+        button {
+            background-color: rgb(2, 185, 222);
+            color: black;
+            margin: 0.2rem;
+        }
+
+        @media (max-width: 768px) {
+            #setup {
+                flex-direction: column;
+            }
+            
+            #repeat-container {
+                flex-direction: row;
+            }
+            
+            #repeat, #no-repeat {
+                margin: 0.2rem;
+                border-radius: 0.2rem;
+            }
+            #repeat {
+                margin-right: 0;
+                border-top-right-radius: 0;
+                border-bottom-right-radius: 0;
+            }
+            #no-repeat {
+                margin-left: 0;
+                border-top-left-radius: 0;
+                border-bottom-left-radius: 0;
+            }
+            
+            #classes-container, #edit-classes {
+                display: none;
+            }
+        }
+    </style>
+    </head>
+    <body>
+        <div id="header">
+            <h1 id="title">Spinner</h1>
+            <a id="back" href="index.html">Back</a>
+        </div>
+        <div id="main-page">
+            <div class="container" id="spinner-container">
+                <a id="fullscreen" href="#">Fullscreen</a>
+                <div id="options">
+                </div>
+                <span class="option" id="option" style="display: none;"></span>
+                <div id="spinner">
+                    ?
+                </div>
+                <div id="control">
+                    <button id="spin">
+                        Spin
+                    </button>
+                </div>
+            </div>
+            <div id="setup">
+                <div class="container" id="repeat-container">
+                    <button id="repeat" disabled>Repeat</button>
+                    <button id="no-repeat">No repeat</button>
+                </div>
+                <div class="container" id="options-container">
+                    <button class="option" data-set='"A","B"'>A / B</button>
+                    <button class="option" data-set="1,2,3">1 - 3</button>
+                    <button class="option" data-set="1,2,3,4">1 - 4</button>
+                    <button class="option" data-set="1,2,3,4,5">1 - 5</button>
+                    <button class="option" data-set="1,2,3,4,5,6">1 - 6</button>
+                    <button class="option" data-set="1,2,3,4,5,6,7">1 - 7</button>
+                    <button class="option" data-set="1,2,3,4,5,6,7,8">1 - 8</button>
+                </div>
+                <div class="container" id="classes-container">
+                </div>
+                <button class="class" id="class" style="display: none">1 - 8</button>
+                <button id="edit-classes">Edit</button>
+            </div>
+        </div>
+        <div id="edit-modal-container">
+            <div class="container" id="edit-modal">
+                <div id="edit-sidebar">
+                    <button id="edit-add">Add Class</button>
+                    <div id="edit-classes-container">
+                    </div>
+                    <button class="edit-class-btn" id="edit-class-btn" style="display: none;"></button>
+                </div>
+                <div id="edit-class-container">
+                    <input type="text" id="edit-name">
+                    <input id="edit-import" type=file  name="files[]">
+                    <label id="edit-import-label" for="edit-import">Import from smartschool xlsx</label>
+                    <div id="edit-info">Comma sperated list of all students in the class.</div>
+                    <textarea id="edit-class"></textarea>
+                    <div id="edit-control-container">
+                        <button id="edit-remove">Remove</button>
+                        <button id="edit-close">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/jszip.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/xlsx.js"></script>
+        <script src="js/main.js"></script>
+        <script>
+            //https://stackoverflow.com/questions/8238407/how-to-parse-excel-xls-file-in-javascript-html5
+            var ExcelToJSON = function() {
+
+                this.parseExcel = function(file) {
+                    let reader = new FileReader();
+
+                    reader.onload = function(e) {
+                        let data = e.target.result;
+                        let workbook = XLSX.read(data, {
+                            type: 'binary'
+                        });
+
+                        workbook.SheetNames.forEach(function(sheetName) {
+                            // Here is your object
+                            let file_json = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
+                            let names = ""
+                            let i = 0;
+                            file_json.forEach(function(row) {
+                                let name = row[undefined];
+                                if (name && name !== "Leerling") {
+                                    if (i !== 0) {
+                                        names += ",";
+                                    }
+                                    names += name;
+                                    i++;
+                                }
+                            });
+                            $("#edit-class").val(names);
+                            return;
+                        })
+
+                    };
+
+                    reader.onerror = function(ex) {
+                        console.log(ex);
+                    };
+
+                    reader.readAsBinaryString(file);
+                };
+            };
+            
+            var items = ["A", "B"];
+            var used = [];
+            var mappingArray = [];
+            var repeat = true;
+            var running = false;
+            var classesData = {};
+            if (localStorage.getItem("classes") !== null) {
+                try {
+                    classesData = JSON.parse(localStorage["classes"]);
+                } catch {
+                    classesData = {};
+                    localStorage["classes"] = "{}"
+                }
+            } else {
+                localStorage["classes"] = "{}"
+            }
+
+            //https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
+            // maping array by me
+            function shuffle(array) {
+                let currentIndex = array.length, temporaryValue, randomIndex;
+                mappingArray = [];
+                for (let i = 0; i < array.length; i++) {
+                    mappingArray.push(i);
+                }
+
+                // While there remain elements to shuffle...
+                while (0 !== currentIndex) {
+
+                    // Pick a remaining element...
+                    randomIndex = Math.floor(Math.random() * currentIndex);
+                    currentIndex -= 1;
+
+                    // And swap it with the current element.
+                    temporaryValue = array[currentIndex];
+                    array[currentIndex] = array[randomIndex];
+                    array[randomIndex] = temporaryValue;
+                    temporaryValue = mappingArray[currentIndex];
+                    mappingArray[currentIndex] = mappingArray[randomIndex];
+                    mappingArray[randomIndex] = temporaryValue;
+                }
+
+                return array;
+            }
+
+            function resetUsed() {
+                used = [];
+                $(".option").removeClass("grey");
+            }
+
+            function spin(target, index, speed) {
+                $("#spinner").text(items[index % items.length]);
+                if (index !== target) {
+                    setTimeout(spin.bind(null, target, index - 1, speed * 1.2), speed);
+                } else {
+                    running = false;
+                    $("button").not("#repeat, #no-repeat").prop("disabled", false);
+                    if (!repeat) {
+                        $(".option").eq(mappingArray[target]).addClass("grey");
+                        used.push(target);
+                        if (used.length >= items.length) {
+                            resetUsed();
+                        }
+                    }
+                }
+            }
+
+            $("#spin").click(function() {
+                if (running || items.length === 0) {
+                    return;
+                }
+                let itemI = Math.floor(Math.random() * items.length);
+                if (!repeat) {
+                    while (used.includes(itemI)) {
+                        itemI = Math.floor(Math.random() * items.length);
+                    }
+                }
+                running = true;
+                $("button").not("#repeat, #no-repeat").prop("disabled", true);
+                spin(itemI, itemI + 15, 16);
+            });
+
+            function setItems() {
+                $("#options").empty();
+                items.forEach(function(item, i) {
+                    if (i !== 0) {
+                        $("#options").append(", ");
+                    }
+                    let option = $("#option").clone();
+                    option.removeAttr("id");
+                    option.show();
+                    option.text(item);
+                    $("#options").append(option);
+                });
+                items = shuffle(items);
+                resetUsed();
+            }
+            $(setItems);
+
+            $(".option").click(function() {
+                items = JSON.parse("[" + $(this).data("set") + "]");
+                setItems();
+            });
+
+            $("#repeat").click(function() {
+                repeat = true;
+                resetUsed();
+                $("#repeat").prop('disabled', true);
+                $("#no-repeat").prop('disabled', false);
+            });
+            $("#repeat").click();
+            $("#no-repeat").click(function() {
+                repeat = false;
+                $("#no-repeat").prop('disabled', true);
+                $("#repeat").prop('disabled', false);
+                resetUsed();
+            });
+
+            function setupClasses() {
+                $("#classes-container").empty();
+                for (const [className, students] of Object.entries(classesData)) {
+                    let option = $("#class").clone();
+                    option.removeAttr("id");
+                    option.show();
+                    option.text(className);
+                    option.data("class", className);
+                    option.click(function() {
+                        items = classesData[$(this).data("class")].split(",");
+                        setItems();
+                    });
+                    $("#classes-container").append(option);
+                }
+            }
+            $(setupClasses);
+
+            function saveEdit() {
+                let texta = $("#edit-class");
+                let namea = $("#edit-name");
+                let oldName = texta.data("class");
+                let newName = namea.val()
+
+                if (texta.data("class")) {
+                    if (oldName === newName) {
+                        classesData[texta.data("class")] = texta.val();
+                    } else {
+                        classesData[newName] = texta.val();
+                        delete classesData[oldName];
+                        setupEditClasses();
+                    }
+                    localStorage.classes = JSON.stringify(classesData);
+                }
+            }
+
+            function onClickClass() {
+                let texta = $("#edit-class");
+                let namea = $("#edit-name");
+                let className = $(this).data("class");
+                saveEdit();
+                texta.prop("disabled", false);
+                namea.prop("disabled", false);
+                $("#edit-remove").prop("disabled", false);
+                $(".edit-class-btn").prop('disabled', false);
+                $("#edit-import").prop('disabled', false);
+                $(this).prop('disabled', true);
+                texta.val(classesData[className]);
+                namea.val(className);
+                texta.data("class", className);
+            }
+
+            function addClass(name) {
+                let newClass = $("#edit-class-btn").clone();
+                newClass.removeAttr("id");
+                newClass.show();
+                newClass.text(name);
+                newClass.data("class", name);
+                newClass.click(onClickClass);
+                $("#edit-classes-container").append(newClass);
+                return newClass;
+            }
+
+            function setupEditClasses() {
+                $("#edit-classes-container").empty();
+                for (const [className, students] of Object.entries(classesData)) {
+                    addClass(className);
+                }
+                $("#edit-class").val("");
+                $("#edit-class").data("class", "");
+                $("#edit-class").prop("disabled", true);
+                $("#edit-name").val("");
+                $("#edit-name").prop("disabled", true);
+                $("#edit-remove").prop("disabled", true);
+                $("#edit-import").prop("disabled", true);
+            }
+
+            $("#edit-classes").click(function() {
+                setupEditClasses();
+                $("#edit-modal-container").css("display", "flex");
+            });
+
+            $("#edit-add").click(function() {
+                name = "class" + Object.entries(classesData).length;
+                classesData[name] = "";
+                let newClass = addClass(name);
+                newClass.click();
+            });
+
+            $("#edit-remove").click(function() {
+                delete classesData[$("#edit-class").data("class")];
+                setupEditClasses();
+                localStorage.classes = JSON.stringify(classesData);
+            });
+
+            $("#edit-close").click(function() {
+                saveEdit();
+                setupClasses();
+                $("#edit-modal-container").css("display", "none");
+            });
+
+            $("#edit-import").change(function(e) {
+                let file = e.target.files[0];
+                let xl2json = new ExcelToJSON();
+                xl2json.parseExcel(file);
+            });
+
+            $("#fullscreen").click(function() {
+                if (document.fullscreenElement != null) {
+                    document.exitFullscreen();
+                    $("#fullscreen").text("Fullscreen");
+                } else {
+                    $("#spinner-container")[0].requestFullscreen();
+                    $("#fullscreen").text("Exit Fullscreen");
+                }
+                fullscreen = !fullscreen;
+            });
+        </script>
+    </body>
+</html>
+

@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/main.css">
+
+    <title>EbbDrop's stopwatch</title>
+
+    <style>
+        body {
+            background: rgb(135, 4, 43);
+            display: flex;
+            flex-direction: column;
+            color: white;
+        }
+
+        #header {
+            background: rgb(210,0,62);
+            display: flex;
+            align-items: center;
+        }
+
+        #title, a {
+            padding: 1rem;
+            margin: 0;
+            display: inline-block;
+            color: white;
+        }
+
+        #back {
+            color: white;
+            margin-left: auto;
+        }
+
+        #main-page {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 0.5rem;
+        }
+
+        .container {
+            background: rgb(180,0,52);
+            margin: 0.5rem;
+            border-radius: 1rem;
+            padding: 1rem;
+        }
+
+        #timer-container {
+            flex: 75%;
+            display: flex;
+            flex-direction: column;
+            background: rgb(180,0,52);
+            position: relative;
+        } 
+
+        #fullscreen {
+            position: absolute;
+            padding: 0;
+            top: 1rem;
+            right: 1rem;
+            text-align: left;
+        }
+
+        #timer-number-holder {
+            display: grid;
+            place-items: center;
+            flex: 1;
+            font-size: 18vw;
+        }
+        
+        #mili {
+            font-size: 5vw;
+            color: lightgray;
+        }
+
+        #control {
+            height: 3rem;
+            display: flex;
+            justify-content: center;
+        }
+
+        #control > button {
+            margin-right: 1em;
+            margin-left: 1em;
+            width: 6rem;
+        }
+
+        button {
+            background-color: rgb(210,0,62);
+            color: white;
+        }
+
+    </style>
+    </head>
+    <body>
+        <div id="header">
+            <a href="timer.html">Timer</a>
+            <a href="bartimer.html">Bar Timer</a>
+            <h1 id="title">Stopwatch</h1>
+            <a href="clock.html">Clock</a>
+            <a id="back" href="index.html">Back</a>
+        </div>
+        <div id="main-page">
+            <div class="container" id="timer-container">
+                <a id="fullscreen" href="#">Fullscreen</a>
+                <div id="timer-number-holder">
+                    <div id="timer">00:00:00<span id="mili">.000</span></div>
+                </div>
+                <div id="control">
+                    <button id="start" style="background-color: green;">
+                        Start
+                    </button>
+                    <button id="stop" style="background-color: red; display: none;">
+                        Stop
+                    </button>
+                    <button id="reset" style="background-color: orange;">
+                        Reset
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+        <script src="js/main.js"></script>
+        <script>
+            var timeLeft = 0;
+            var running = false;
+            var timer;
+
+            function changeRunning(run) {
+                running = run;
+                if (running) {
+                    $("#start").text("Continue");
+                    $("#stop").text("Pause");
+                } else {
+                    $("#start").text("Start");
+                    $("#stop").text("Stop");
+                }
+            }
+
+            function updateTimeDisplay() {
+                let miliseconds = Math.floor(timeLeft);
+                let hours = Math.floor(miliseconds / 3600000);
+                miliseconds -= hours * 3600000;
+                let minutes = Math.floor(miliseconds / 60000);
+                miliseconds -= minutes * 60000;
+                let seconds = Math.floor(miliseconds / 1000);
+                miliseconds -= seconds * 1000;
+                $("#timer").contents()[0].data = hours.toString().padStart(2, "0") + ":" + minutes.toString().padStart(2, "0") + ":" + seconds.toString().padStart(2, "0");
+                $("#mili").text("." + miliseconds.toString().padStart(3, "0"));
+            }
+
+            $("#start").click(function() {
+                if (!running) {
+                    timeLeft = 0;
+                }
+                updateTimeDisplay();
+                timeLeft += 1;
+                var prevDate = Date.now();
+                timer = setInterval(function() {
+                    let delta = Date.now() - prevDate;
+                    prevDate = Date.now();
+                    updateTimeDisplay();
+                    timeLeft += delta;
+                }, 16);
+                changeRunning(true);
+                $("#start").hide();
+                $("#stop").show();
+            });
+
+            $("#stop").click(function() {
+                clearInterval(timer);
+                $("#start").show();
+                $("#stop").hide();
+            });
+
+            function reset() {
+                timeLeft = 0;
+                updateTimeDisplay();
+                clearInterval(timer);
+                changeRunning(false);
+                $("#start").show();
+                $("#stop").hide();
+            }
+            $("#reset").click(reset);
+            
+            $("#fullscreen").click(function() {
+                if (document.fullscreenElement != null) {
+                    document.exitFullscreen();
+                    $("#fullscreen").text("Fullscreen");
+                } else {
+                    $("#timer-container")[0].requestFullscreen();
+                    $("#fullscreen").text("Exit Fullscreen");
+                }
+                fullscreen = !fullscreen;
+            });
+        </script>
+    </body>
+</html>
+

@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="css/main.css">
+
+    <title>EbbDrop's timer</title>
+
+    <style>
+        #spinner {
+            background: rgb(0,175,210);
+            background: linear-gradient(75deg, rgba(0,155,180,1) 0%, rgba(0,212,255,1) 100%);
+            transition: 0.3s;
+        }
+
+        #timer {
+            background: rgb(210,0,62);
+            background: linear-gradient(105deg, rgba(190,0,40,1) 0%, rgba(255,0,75,1) 100%);
+            transition: 0.3s;
+            color: white;
+        }
+
+        #container {
+            display: flex;
+            height: 100%;
+        }
+        
+        .big-button:hover {
+            flex: 1;
+            filter: brightness(120%);
+            color: black;
+            flex: 55%;
+        }
+
+        .big-button:active {
+            flex: 1 0 80%;
+        }
+
+        .big-button {
+            flex: 1 1 50%;
+            color: black;
+        }
+        
+        @media (max-width: 768px) {
+            #container {
+                flex-direction: column;
+            }
+    </style>
+  </head>
+  <body>
+    <div id="container">
+        <a href="spinner.html" class="center big-button" id="spinner"><h1 class="bold">Spinner</h1></a>
+        <a href="timer.html" class="center big-button" id="timer"><h1 class="bold">Timer</h1></a>
+    </div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+  </body>
+</html>
+

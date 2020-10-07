@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/main.css">
+
+    <title>EbbDrop's clock</title>
+
+    <style>
+        body {
+            background: rgb(135, 4, 43);
+            display: flex;
+            flex-direction: column;
+            color: white;
+        }
+
+        #header {
+            background: rgb(210,0,62);
+            display: flex;
+            align-items: center;
+        }
+
+        #title, a {
+            padding: 1rem;
+            margin: 0;
+            display: inline-block;
+            color: white;
+        }
+
+        #back {
+            color: white;
+            margin-left: auto;
+        }
+
+        #main-page {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 0.5rem;
+        }
+
+        .container {
+            background: rgb(180,0,52);
+            margin: 0.5rem;
+            border-radius: 1rem;
+            padding: 1rem;
+        }
+
+        #timer-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: rgb(180,0,52);
+            position: relative;
+        } 
+
+        #fullscreen {
+            position: absolute;
+            padding: 0;
+            top: 1rem;
+            right: 1rem;
+            text-align: left;
+        }
+
+        #timer {
+            flex: 1;
+            font-size: 20vw;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        #date {
+            flex: 1;
+            font-size: 8vw;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+        }
+
+    </style>
+    </head>
+    <body>
+        <div id="header">
+            <a href="timer.html">Timer</a>
+            <a href="bartimer.html">Bar Timer</a>
+            <a href="stopwatch.html">Stopwatch</a>
+            <h1 id="title">Clock</h1>
+            <a id="back" href="index.html">Back</a>
+        </div>
+        <div id="main-page">
+            <div class="container" id="timer-container" style="display: none;">
+                <a id="fullscreen" href="#">Fullscreen</a>
+                <div id="timer" >
+                    00:00
+                </div>
+                <div id="date">
+                    03/10/2020
+                </div>
+            </div>
+        </div>
+
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+        <script src="js/main.js"></script>
+        <script>
+            function update() {
+                var d = new Date();
+                let hours = d.getHours();
+                let minutes = d.getMinutes();
+                $("#timer").text(hours.toString().padStart(2, "0") + ":" + minutes.toString().padStart(2, "0"));
+                let day = d.getDate();
+                let month = d.getMonth() + 1;
+                let year = d.getFullYear();
+                $("#date").text(day.toString().padStart(2, "0") + "/" + month.toString().padStart(2, "0") + "/" + year.toString());
+                $("#timer-container").show();
+            }
+            var timer = setInterval(update, 500);
+            $(update());
+            
+            $("#fullscreen").click(function() {
+                if (document.fullscreenElement != null) {
+                    document.exitFullscreen();
+                    $("#fullscreen").text("Fullscreen");
+                } else {
+                    $("#timer-container")[0].requestFullscreen();
+                    $("#fullscreen").text("Exit Fullscreen");
+                }
+                fullscreen = !fullscreen;
+            });
+        </script>
+    </body>
+</html>
+
