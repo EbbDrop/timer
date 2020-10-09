@@ -407,6 +407,7 @@
             var currentBar = 0;
             var running = false;
             var timer;
+            var alarmOn = false;
             var alarm = new Audio('sounds/alarm.mp3');
             alarm.loop = true;
             var pling = new Audio('sounds/pling.mp3');
@@ -482,8 +483,9 @@
                         if (timeLeft.reduce((a, b) => a + b) === 0) {
                             $("#timer-container").addClass("alarm");
                             currentBar = 0;
-                            reset();
                             alarm.play();
+                            $("#start").hide();
+                            alarmOn = true;
                         } else {
                             pling.play();
                             nextBar();
@@ -589,9 +591,13 @@
             });
 
             $(document).click(function() {
-                $("#timer-container").removeClass("alarm");
-                alarm.pause();
-                alarm.currentTime = 0;
+                if (alarmOn) {
+                    alarmOn = false;
+                    $("#timer-container").removeClass("alarm");
+                    alarm.pause();
+                    alarm.currentTime = 0;
+                    reset();
+                }
             });
             
             $("#fullscreen").click(function() {
