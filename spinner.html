@@ -400,6 +400,7 @@
                 };
             };
             
+            var Uitems = ["A", "B"];
             var items = ["A", "B"];
             var used = [];
             var mappingArray = [];
@@ -416,7 +417,52 @@
             } else {
                 localStorage["classes"] = "{}"
             }
-
+            
+            $(function() {
+                if (sessionStorage.getItem("spinner") !== null) {
+                    let data = JSON.parse(sessionStorage["spinner"]);
+                    items = data["items"];
+                    Uitems = data["Uitems"]
+                    repeat = data["repeat"];
+                    if (repeat) {
+                        $("#repeat").click();
+                    } else {
+                        $("#no-repeat").click();
+                    }
+                    mappingArray = data["mappingArray"];
+                    used = data["used"];
+                    
+                    $("#options").empty();
+                    Uitems.forEach(function(item, i) {
+                        if (i !== 0) {
+                            $("#options").append(", ");
+                        }
+                        let option = $("#option").clone();
+                        option.removeAttr("id");
+                        option.show();
+                        option.text(item);
+                        $("#options").append(option);
+                    });
+                    used.forEach(function(x, u) {
+                        $(".option").eq(mappingArray[x]).addClass("grey");
+                    });
+                } else {
+                    setItems();
+                    $("#repeat").click();
+                }
+            });
+            
+            window.onunload = function () {
+                let sessionData = {
+                    Uitems: Uitems,
+                    items: items,
+                    used: used,
+                    mappingArray: mappingArray,
+                    repeat: repeat,
+                };
+                sessionStorage["spinner"] = JSON.stringify(sessionData);
+                return "dasdsa";
+            }
             //https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
             // maping array by me
             function shuffle(array) {
@@ -494,10 +540,10 @@
                     option.text(item);
                     $("#options").append(option);
                 });
+                Uitems = [...items];
                 items = shuffle(items);
                 resetUsed();
             }
-            $(setItems);
 
             $(".option").click(function() {
                 items = JSON.parse("[" + $(this).data("set") + "]");
@@ -510,7 +556,6 @@
                 $("#repeat").prop('disabled', true);
                 $("#no-repeat").prop('disabled', false);
             });
-            $("#repeat").click();
             $("#no-repeat").click(function() {
                 repeat = false;
                 $("#no-repeat").prop('disabled', true);
