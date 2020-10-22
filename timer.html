@@ -289,13 +289,30 @@
         <script src="js/main.js"></script>
         <script>
             var timeLeft = 0;
-            var startTime;
+            var startTime = 0;
             var running = false;
             var timer;
             var alarmOn = false;
             var alarm = new Audio('sounds/alarm.mp3');
             alarm.loop = true;
 
+            $(function() {
+                if (sessionStorage.getItem("timer") !== null) {
+                    let data = JSON.parse(sessionStorage["timer"]);
+                    startTime = data["startTime"];
+                    timeLeft = startTime;
+                    updateTimeDisplay();
+                }
+            });
+
+            window.onunload = function () {
+                let sessionData = {
+                    startTime: startTime,
+                };
+                sessionStorage["timer"] = JSON.stringify(sessionData);
+                return false;
+            }
+            
             function changeRunning(run) {
                 running = run;
                 if (running) {

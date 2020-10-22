@@ -413,6 +413,37 @@
             alarm.loop = true;
             var pling = new Audio('sounds/pling.mp3');
 
+            $(function() {
+                if (sessionStorage.getItem("bartimer") !== null) {
+                    let data = JSON.parse(sessionStorage["bartimer"]);
+                    startTime = data["startTime"];
+                    targetBars = data["bars"];
+                    if (targetBars < 4) {
+                        for (let i = 4; i > targetBars; i--) {
+                            $("#sub-user").click();
+                        }
+                    } else if (targetBars > 4) {
+                        for (let i = 4; i < targetBars; i++) {
+                            $("#add-user").click();
+                        }
+                    }
+                    timeLeft = [];
+                    for (let i = 0; i < bars; i++) {
+                        timeLeft[i] = startTime;
+                    }
+                    updateTimeDisplay();
+                }
+            });
+
+            window.onunload = function () {
+                let sessionData = {
+                    startTime: startTime,
+                    bars: bars,
+                };
+                sessionStorage["bartimer"] = JSON.stringify(sessionData);
+                return false;
+            }
+
             function changeRunning(run) {
                 running = run;
                 if (running) {
